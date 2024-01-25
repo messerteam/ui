@@ -22,5 +22,5 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        push: false
+        push: true
         tags: messerteam/ui:${{ github.ref_name }}

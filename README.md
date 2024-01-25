@@ -43,7 +43,7 @@ If you want to run a production build, you will need to set the following enviro
 | --------- | -------------------------- | ----------------------- |
 | `API_URL` | The URL of the Backend API | `http://localhost:5001` |
 
-## Docker
+## Docker Support
 
 ```bash
 # Build the image
@@ -54,4 +54,7 @@ docker run -p 3000:3000 messerteam/ui
 
 # Run the image with environment variables
 docker run -p 3000:3000 -e API_URL=<API-URL> messerteam/ui
+
+# Use official image
+docker run -p 3000:3000 -e API_URL=<API-URL> docker.io/messerteam/ui:1.0
 ```

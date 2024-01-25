@@ -57,3 +57,4 @@ docker run -p 3000:3000 -e API_URL=<API-URL> messerteam/ui
 # Use official image
 docker run -p 3000:3000 -e API_URL=<API-URL> docker.io/messerteam/ui:1.0
 ```
+See [Docker Hub](https://hub.docker.com/r/messerteam/ui) for more information.

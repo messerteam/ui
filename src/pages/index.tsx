@@ -9,7 +9,6 @@ import { getServerSideProps } from "~/utils/serverProps";
 export { getServerSideProps };
 
 function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  console.log(props.apiURL);
 
   return (
     <>
@@ -46,7 +45,7 @@ function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
       </div>
     </>
   );
-};
+}
 
 export default Home;
 

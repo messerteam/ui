@@ -23,4 +23,4 @@ jobs:
       with:
         context: .
         push: false
-        tags: messerteam/ui:${{ github.ref }}
+        tags: messerteam/ui:${{ github.ref_name }}

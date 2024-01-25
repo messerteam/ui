@@ -18,7 +18,6 @@ To get started, you will need to have the following installed:
 ## Installation
 
 ```bash
-# Install dependencies
 pnpm i
 ```
 

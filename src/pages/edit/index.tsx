@@ -202,6 +202,17 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
         </div>;
     }
 
+    if (subtitlesQuery.isError) {
+        return <div className="flex flex-col items-center text-center justify-center gap-4 m-auto w-1/2 text-xl">
+            <span>
+                Error occured while fetching subtitles...
+            </span>
+            <span className='text-red-500'>
+                {String(subtitlesQuery.error)}
+            </span>
+        </div>;
+    }
+
     return (
         <>
             <Head>
@@ -214,7 +225,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                             <>
                                 <h1 className="text-2xl font-bold mx-auto w-fit">Video Exported!</h1>
                                 <Button variant={"link"} asChild>
-                                    <Link href={{ pathname: `${props.apiURL}/video/download/${query.id}` }} target='_blank'>
+                                    <Link href={{ pathname: `${props.apiURL}/project/${query.id}/video/download/` }} target='_blank'>
                                         <span className="m-auto">
                                             Download Genereated Video
                                         </span>
@@ -264,7 +275,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                     <video
                         controls
                         className='transition z-30 w-1/2 m-auto grow rounded-md'
-                        src={`${props.apiURL}/video?projectId=${query.id}`}
+                        src={`${props.apiURL}/project/${query.id}/video`}
                         onTimeUpdate={() => {
                             checkVideo();
                         }}

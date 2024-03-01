@@ -1,7 +1,15 @@
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { Download, Pencil, Trash2 } from 'lucide-react';
 import Head from 'next/head';
 import Link from 'next/link';
+import type { InferGetServerSidePropsType } from 'next/types';
 import React from 'react';
+import { useQuery } from 'react-query';
+import { toast } from 'sonner';
+import Button from '~/components/ui/button';
 import {
     Table,
     TableBody,
@@ -9,19 +17,11 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "~/components/ui/table"
-import { useQuery } from 'react-query';
-import type { Project } from '~/types';
-import { getServerSideProps } from '~/utils/serverProps';
-import type { InferGetServerSidePropsType } from 'next/types';
-import { getAPI } from '~/utils/api';
-import Button from '~/components/ui/button';
-import { toast } from 'sonner';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+} from "~/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip';
+import type { Project } from '~/types';
+import { getAPI } from '~/utils/api';
+import { getServerSideProps } from '~/utils/serverProps';
 
 dayjs.extend(relativeTime);
 dayjs.extend(timezone);
@@ -148,7 +148,7 @@ const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSidePro
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell>
-                                            {project.stage}
+                                            <PrettyStage stage={project.stage} />
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex gap-2 justify-end">
@@ -206,5 +206,18 @@ const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSidePro
         </>
     );
 };
+
+function PrettyStage(props: { stage: string }): JSX.Element {
+    switch (props.stage) {
+        case 'exporting':
+            return <span className='text-yellow-500'>Exporting</span>;
+        case 'completed':
+            return <span className='text-green-500'>Ready To Download</span>;
+        case 'failed':
+            return <span className='text-red-500'>Failed</span>;
+        default:
+            return <span className='text-gray-500'>{props.stage}</span>;
+    }
+}
 
 export default ProjectsPage;

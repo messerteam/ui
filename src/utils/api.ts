@@ -1,7 +1,6 @@
-import { env } from "~/env.mjs";
+import dayjs from 'dayjs';
 import type { Project, Subtitle } from "~/types";
 import { generateWords } from "./utils";
-import dayjs from 'dayjs';
 
 
 interface IAPI {
@@ -158,9 +157,9 @@ export class API implements IAPI {
 export default API;
 
 export const getAPI = (baseUrl: string): IAPI => {
-    if (env.NEXT_PUBLIC_NODE_ENV === 'development') {
-    return new MockAPI(baseUrl);
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //     return new MockAPI(baseUrl);
+    // }
 
     return new API(baseUrl);
 }

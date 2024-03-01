@@ -1,13 +1,13 @@
+import { ArrowLeft } from "lucide-react";
 import { type AppType } from "next/app";
-import "~/styles/globals.css";
+import { Lexend } from "next/font/google";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { ThemeProvider } from "~/components/theme";
 import Toaster from "~/components/ui/sonner";
-import { Lexend } from "next/font/google";
-import { ArrowLeft, Settings } from "lucide-react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { TooltipProvider } from "~/components/ui/tooltip";
+import "~/styles/globals.css";
 
 const lexend = Lexend({
   subsets: ["latin"],

@@ -1,7 +1,6 @@
-import { env } from "~/env.mjs";
+import dayjs from 'dayjs';
 import type { Project, Subtitle } from "~/types";
 import { generateWords } from "./utils";
-import dayjs from 'dayjs';
 
 
 interface IAPI {
@@ -11,6 +10,7 @@ interface IAPI {
     getProject(projectId: string): Promise<Project>;
     updateProject(projectId: string, params: any): Promise<Project>;
     getSubtitles(projectId: string): Promise<any>;
+    deleteProject(projectId: string): Promise<any>;
 }
 
 export class MockAPI implements IAPI {
@@ -70,6 +70,10 @@ export class MockAPI implements IAPI {
     exportVideo(videoId: string, exportOptions: string, params: any): Promise<any> {
         return Promise.resolve({});
     }
+
+    deleteProject(projectId: string): Promise<any> {
+        return Promise.resolve({});
+    }
 }
 
 
@@ -90,7 +94,7 @@ export class API implements IAPI {
     }
 
     public async exportVideo(videoId: string, exportOptions: string, params: any) {
-        const response = await fetch(`${this.baseUrl}/export_video?projectId=${videoId}&export_options=${exportOptions}`, {
+        const response = await fetch(`${this.baseUrl}/project/${videoId}/export?export_options=${exportOptions}`, {
             method: 'POST',
             body: params
         });
@@ -99,7 +103,7 @@ export class API implements IAPI {
     }
 
     public async getProjects(): Promise<Project[]> {
-        const response = await fetch(`${this.baseUrl}/projects`, {
+        const response = await fetch(`${this.baseUrl}/project/`, {
             method: 'GET'
         });
 
@@ -107,7 +111,7 @@ export class API implements IAPI {
     }
 
     public async getProject(projectId: string): Promise<Project> {
-        const response = await fetch(`${this.baseUrl}/project?projectId=${projectId}`, {
+        const response = await fetch(`${this.baseUrl}/project/${projectId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -127,11 +131,23 @@ export class API implements IAPI {
     }
 
     public async getSubtitles(projectId: string) {
-        const response = await fetch(`${this.baseUrl}/subtitles?projectId=${projectId}`, {
+        const response = await fetch(`${this.baseUrl}/project/${projectId}/subtitles`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
+        });
+
+        if (response.status === 404) {
+            throw new Error('Subtitles or project not found');
+        }
+
+        return response.json();
+    }
+
+    public async deleteProject(projectId: string) {
+        const response = await fetch(`${this.baseUrl}/project/${projectId}`, {
+            method: 'DELETE',
         });
 
         return response.json();
@@ -141,9 +157,9 @@ export class API implements IAPI {
 export default API;
 
 export const getAPI = (baseUrl: string): IAPI => {
-    if (env.NEXT_PUBLIC_NODE_ENV === 'development') {
-        return new MockAPI(baseUrl);
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //     return new MockAPI(baseUrl);
+    // }
 
     return new API(baseUrl);
 }

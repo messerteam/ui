@@ -3,8 +3,9 @@ export type Project = {
     title: string;
     description: string;
     additionalInfo: string;
-    ctime: string;
-    mtime: string;
+    ctime: number;
+    mtime: number;
+    stage: string;
     exported?: boolean;
 };
 

@@ -1,60 +1,39 @@
-# Messer UI
+[Whisper Model]: https://github.com/openai/whisper
+[Messer Frontend]: https://github.com/messerteam/ui
+[Messer Whisper]: https://github.com/messerteam/whisper
+[Messer Backend]: https://github.com/messerteam/backend
 
-This is the UI for Messer, a tool for creating and managing videos with subtitles in minutes.
+# Messer Frontend
 
-## Table of Contents
+This is one of the three parts of the Messer project. This part is the Frontend, which provides a user interface for the user to interact with the videos.
 
-- [Getting Started](#getting-started)
-- [Installation](#installation)
+Other parts of the project are:
+- [x] [Messer Frontend]: The frontend is a web application that provides a user interface for the user to interact with the videos.
+- [ ] [Messer Whisper]: Whisper is a RESTful API that provides the [Whisper Model] for the backend.
+- [ ] [Messer Backend]: The backend is a RESTful API that provides the data for the frontend.
 
 ## Getting Started
-
-To get started, you will need to have the following installed:
-
-- [Node.js](https://nodejs.org/en/)
-- [pnpm](https://pnpm.io/)
-- [Git](https://git-scm.com/)
-
-## Installation
+This code is written in TypeScript & React. To get started, you need to install the dependencies. You can do this by running the following command:
 
 ```bash
 pnpm i
-```
-
-## Development
-
-```bash
-pnpm dev
-```
-
-## Production
-
-```bash
 pnpm build
 pnpm start
 ```
+This will install the dependencies and start the server on port 3000.
 
 ## Environment Variables
+The following environment variables are required to run the server:
 
-If you want to run a production build, you will need to set the following environment variables:
+| Name | Description | Default |
+|------|-------------|---------|
+| `API_URL` | The URL of the Backend API | `http://localhost:3001` |
 
-| Name      | Description                | Default Value           |
-| --------- | -------------------------- | ----------------------- |
-| `API_URL` | The URL of the Backend API | `http://localhost:5001` |
-
-## Docker Support
+## Other Ways to Run
+### Docker
+You can also run the server using Docker. To do this, you need to build the Docker image and run it. You can do this by running the following commands:
 
 ```bash
-# Build the image
 docker build -t messerteam/ui .
-
-# Run the image
 docker run -p 3000:3000 messerteam/ui
-
-# Run the image with environment variables
-docker run -p 3000:3000 -e API_URL=<API-URL> messerteam/ui
-
-# Use official image
-docker run -p 3000:3000 -e API_URL=<API-URL> docker.io/messerteam/ui:1.0
 ```
-See [Docker Hub](https://hub.docker.com/r/messerteam/ui) for more information.

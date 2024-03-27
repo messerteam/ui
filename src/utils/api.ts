@@ -11,6 +11,7 @@ interface IAPI {
     updateProject(projectId: string, params: any): Promise<Project>;
     getSubtitles(projectId: string): Promise<any>;
     deleteProject(projectId: string): Promise<any>;
+    updateSubtitles(projectId: string, params: any): Promise<any>;
 }
 
 export class MockAPI implements IAPI {
@@ -59,6 +60,10 @@ export class MockAPI implements IAPI {
         return Promise.resolve({ subtitles: this.subtitles.at(projectId as number) });
     }
 
+    updateSubtitles(projectId: string, params: any): Promise<any> {
+        return Promise.resolve({ projectId: '1' });
+    }
+
     updateProject(projectId: string, params: any): Promise<Project> {
         return Promise.resolve(this.projects.find(project => project.id === projectId)) as Promise<Project>;
     }
@@ -87,6 +92,15 @@ export class API implements IAPI {
     public async createSubtitles(params: any) {
         const response = await fetch(`${this.baseUrl}/project`, {
             method: 'POST',
+            body: params,
+        });
+
+        return response.json();
+    }
+
+    public async updateSubtitles(projectId: string, params: any) {
+        const response = await fetch(`${this.baseUrl}/project/${projectId}/subtitles`, {
+            method: 'PATCH',
             body: params,
         });
 

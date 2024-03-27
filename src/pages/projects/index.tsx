@@ -80,7 +80,7 @@ const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSidePro
                                 } else if (projectsApi.data?.length === 0) {
                                     return (
                                         <TableRow>
-                                            <TableCell colSpan={6} className='text-center'>
+                                            <TableCell colSpan={7} className='text-center'>
                                                 <div className='flex flex-col gap-1 items-center'>
                                                     <span className='text-gray-500'>
                                                         No projects found.

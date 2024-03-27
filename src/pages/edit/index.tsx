@@ -32,26 +32,26 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
     const [updatingOriginalSubs, setUpdatingOriginalSubs] = useState<Subtitle[]>([]);
     const totalSubtitles = fetchedSubs.length;
     const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState(0);
-    const [exportOptions, setExportOptions] = useState<string>("translated_subtitles");
+    const [exportOptions, setExportOptions] = useState<string>("original_subs");
     const currentSubtitle = fetchedSubs[currentSubtitleIndex];
     const videoRef = useRef<HTMLVideoElement>(null);
     const subtitlesQuery = useQuery('subtitles', () => getAPI(props.apiURL).getSubtitles(query.id).then((res) => {
-        setFetchedSubs(res.subtitles.map((sub) => {
+        setFetchedSubs(res.subtitles.map((sub, i) => {
             return {
                 ...sub,
-                translatedText: ""
+                translatedText: res.translated_subs[i].text
             }
         }) as Subtitle[]);
-        setOriginalSubs(res.subtitles.map((sub) => {
+        setOriginalSubs(res.subtitles.map((sub, i) => {
             return {
                 ...sub,
-                translatedText: ""
+                translatedText: res.translated_subs[i].text
             }
         }) as Subtitle[]);
-        setUpdatingOriginalSubs(res.subtitles.map((sub) => {
+        setUpdatingOriginalSubs(res.subtitles.map((sub, i) => {
             return {
                 ...sub,
-                translatedText: ""
+                translatedText: res.translated_subs[i].text
             }
         }) as Subtitle[]);
     }
@@ -66,9 +66,9 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
             setExported(true);
         }
     });
+    const updateSubtitlesMutation = useMutation((params: any) => getAPI(props.apiURL).updateSubtitles(query.id as string, params));
     const projectData = useQuery("project", () => getAPI(props.apiURL).getProject(query.id as string), {
         refetchOnWindowFocus: false,
-        enabled: isRouterReady,
     });
     const [open, setOpen] = useState(false);
     const [exported, setExported] = useState(false);
@@ -183,6 +183,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
 
     const resetAllSubtitles = () => {
         setFetchedSubs([...originalSubs]);
+        updateSubtitles([...originalSubs]);
     }
 
     const resetCurrentSubtitle = () => {
@@ -190,6 +191,27 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
         newSubs[currentSubtitleIndex] = updatingOriginalSubs[currentSubtitleIndex];
 
         setFetchedSubs(newSubs);
+    }
+
+    const updateSubtitles = (subsToUpdate: any[]) => {
+        const formData = new FormData();
+        const times = subsToUpdate.map((sub) => {
+            return [sub.start, sub.end]
+        });
+        const originalSubs = subsToUpdate.map((sub) => {
+            return sub.text
+        });
+        const translatedSubs = subsToUpdate.map((sub) => {
+            return sub.translatedText
+        });
+        formData.append('time', JSON.stringify(times));
+        formData.append('original_text', JSON.stringify(originalSubs));
+        formData.append('trans_text', JSON.stringify(translatedSubs));
+
+        updateSubtitlesMutation.mutateAsync(formData)
+            .then(() => {
+                console.log("Subtitles Updated");
+            });
     }
 
     useEffect(() => {
@@ -342,6 +364,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                         onChange={(e) => {
                             changeCurrentOriginalSubtitle(e.target.value)
                         }}
+                        onBlur={() => updateSubtitles(fetchedSubs)}
                     />
                 </div>
                 <div className="relative grid w-full max-w-1/2 items-center gap-1.5">
@@ -356,6 +379,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                         onChange={(e) => {
                             changeCurrentTranslatedSubtitle(e.target.value)
                         }}
+                        onBlur={() => updateSubtitles(fetchedSubs)}
                     />
                     <div className={`absolute right-1 top-2 flex items-center justify-center px-1 py-1 bg-orange-300 rounded-full transition ${currentSubtitle?.translatedText === "" ? "opacity-100" : "opacity-0"}`}>
                         <AlertTriangle className='stroke-orange-500' width={18} height={18} />
@@ -379,7 +403,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                             Reset Subtitle
                         </span>
                     </Button>
-                    <Button variant="ghost" className='flex gap-3 text-sm font-bold rounded-lg' onClick={() => resetAllSubtitles()}>
+                    <Button variant="ghost" className='flex gap-3 text-sm font-bold rounded-lg' onClick={() => resetAllSubtitles}>
                         <ListRestart width={20} height={20} />
                         <span>
                             Reset All Subtitles

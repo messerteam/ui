@@ -68,13 +68,13 @@ const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSidePro
                                 if (projectsApi.isLoading) {
                                     return (
                                         <TableRow>
-                                            <TableCell colSpan={6} className='text-center'>Loading Projects...</TableCell>
+                                            <TableCell colSpan={7} className='text-center'>Loading Projects...</TableCell>
                                         </TableRow>
                                     );
                                 } else if (projectsApi.isError) {
                                     return (
                                         <TableRow>
-                                            <TableCell colSpan={6} className='text-center text-red-500'>Failed to load projects</TableCell>
+                                            <TableCell colSpan={7} className='text-center text-red-500'>Failed to load projects</TableCell>
                                         </TableRow>
                                     );
                                 } else if (projectsApi.data?.length === 0) {

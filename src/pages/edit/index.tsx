@@ -20,6 +20,7 @@ import type { Subtitle } from '~/types';
 import { getAPI } from '~/utils/api';
 import { getServerSideProps } from '~/utils/serverProps';
 import { assembleToSeconds, dismantleSecs } from '~/utils/utils';
+import { toast } from 'sonner';
 
 
 
@@ -30,30 +31,30 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
     const [originalSubs, setOriginalSubs] = useState<Subtitle[]>([]);
     const [fetchedSubs, setFetchedSubs] = useState<Subtitle[]>([]);
     const [updatingOriginalSubs, setUpdatingOriginalSubs] = useState<Subtitle[]>([]);
+    const [staticSubs, setStaticSubs] = useState<Subtitle[]>([]);
     const totalSubtitles = fetchedSubs.length;
     const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState(0);
     const [exportOptions, setExportOptions] = useState<string>("original_subs");
     const currentSubtitle = fetchedSubs[currentSubtitleIndex];
     const videoRef = useRef<HTMLVideoElement>(null);
     const subtitlesQuery = useQuery('subtitles', () => getAPI(props.apiURL).getSubtitles(query.id).then((res) => {
-        setFetchedSubs(res.subtitles.map((sub, i) => {
+        const subs = res.original_subs.length > 0 ? res.original_subs : res.subtitles;
+        const subtitles = subs.map((sub: Subtitle, i: number) => {
             return {
                 ...sub,
-                translatedText: res.translated_subs[i].text
+                translatedText: res.translated_subs[i]?.text ?? ""
             }
-        }) as Subtitle[]);
-        setOriginalSubs(res.subtitles.map((sub, i) => {
+        }) as Subtitle[];
+        const staticSubtitles = res.subtitles.map((sub: Subtitle, i: number) => {
             return {
                 ...sub,
-                translatedText: res.translated_subs[i].text
+                translatedText: res.translated_subs[i]?.text ?? ""
             }
-        }) as Subtitle[]);
-        setUpdatingOriginalSubs(res.subtitles.map((sub, i) => {
-            return {
-                ...sub,
-                translatedText: res.translated_subs[i].text
-            }
-        }) as Subtitle[]);
+        }) as Subtitle[];
+        setFetchedSubs(subtitles);
+        setOriginalSubs(subtitles);
+        setUpdatingOriginalSubs(subtitles);
+        setStaticSubs(staticSubtitles);
     }
     ), {
         enabled: isRouterReady,
@@ -142,6 +143,8 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
         const newOriginalSubs = [...updatingOriginalSubs];
         newOriginalSubs.splice(currentSubtitleIndex, 1);
         setUpdatingOriginalSubs(newOriginalSubs);
+
+        updateSubtitles(newSubs);
     }
 
     const resetVideo = () => {
@@ -179,18 +182,22 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
         }
 
         setFetchedSubs(newSubs);
+        updateSubtitles(newSubs);
     }
 
     const resetAllSubtitles = () => {
-        setFetchedSubs([...originalSubs]);
-        updateSubtitles([...originalSubs]);
+        setFetchedSubs([...staticSubs]);
+        updateSubtitles([...staticSubs]);
     }
 
     const resetCurrentSubtitle = () => {
         const newSubs = [...fetchedSubs];
-        newSubs[currentSubtitleIndex] = updatingOriginalSubs[currentSubtitleIndex];
+        newSubs[currentSubtitleIndex] = {
+            ...staticSubs[currentSubtitleIndex]
+        };
 
         setFetchedSubs(newSubs);
+        updateSubtitles(newSubs);
     }
 
     const updateSubtitles = (subsToUpdate: any[]) => {
@@ -208,10 +215,11 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
         formData.append('original_text', JSON.stringify(originalSubs));
         formData.append('trans_text', JSON.stringify(translatedSubs));
 
-        updateSubtitlesMutation.mutateAsync(formData)
-            .then(() => {
-                console.log("Subtitles Updated");
-            });
+        toast.promise(updateSubtitlesMutation.mutateAsync(formData), {
+            loading: "Updating subtitles...",
+            success: "Subtitles updated!",
+            error: "Error occured while updating subtitles..."
+        });
     }
 
     useEffect(() => {
@@ -397,13 +405,13 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                             Delete Subtitle
                         </span>
                     </Button>
-                    <Button variant="ghost" className='flex gap-3 text-sm font-bold rounded-lg' onClick={() => resetCurrentSubtitle()}>
+                    <Button variant="ghost" className='flex gap-3 text-sm font-bold rounded-lg' onClick={resetCurrentSubtitle}>
                         <RotateCcw width={20} height={20} />
                         <span>
                             Reset Subtitle
                         </span>
                     </Button>
-                    <Button variant="ghost" className='flex gap-3 text-sm font-bold rounded-lg' onClick={() => resetAllSubtitles}>
+                    <Button variant="ghost" className='flex gap-3 text-sm font-bold rounded-lg' onClick={resetAllSubtitles}>
                         <ListRestart width={20} height={20} />
                         <span>
                             Reset All Subtitles
@@ -450,8 +458,6 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                                 variant="ghost"
                                 disabled={subsInvalidRange.length > 0}
                                 onClick={() => {
-                                    console.log("fetchedSubs", fetchedSubs);
-
                                     const formData = new FormData();
                                     const times = fetchedSubs.map((sub) => {
                                         return [sub.start, sub.end]

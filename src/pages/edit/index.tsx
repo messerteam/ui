@@ -248,8 +248,8 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
             <Head>
                 <title>Edit</title>
             </Head>
-            {(exportVideoMutation.isLoading || exported) && <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-40">
-                <div className="bg-white rounded-xl p-10">
+            {(exportVideoMutation.isLoading || exported) && <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex items-center justify-center z-40">
+                <div className="bg-white rounded-xl p-10 dark:bg-background dark:border dark:border-white">
                     {
                         exported ?
                             <>
@@ -505,7 +505,7 @@ const DurationEditor: FC<{ duration: number, onChange: (newDuration: number) => 
     let minutesAreBad = false
     let secondsAreBad = false
     let millisecondsAreBad = false
-    let isSame = duration === otherDuration?.duration;
+    const isSame = duration === otherDuration?.duration;
     if (otherDuration) {
         if (otherDuration.supposedToBe === "After") {
             hoursAreBad = hours > otherHours;
@@ -527,7 +527,7 @@ const DurationEditor: FC<{ duration: number, onChange: (newDuration: number) => 
 
     return (
         <div className="flex items-center">
-            <Input type="number" min="0" max="23" value={formatUnit(hours, 2)} className={`text-base text-black bg-transparent ${hoursAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((2*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
+            <Input type="number" min="0" max="23" value={formatUnit(hours, 2)} className={`dark:text-white text-base text-black bg-transparent ${hoursAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((2*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
                 console.log(e.target.value);
 
                 const newHours = e.target.value === "" ? 0 : parseInt(e.target.value);
@@ -541,7 +541,7 @@ const DurationEditor: FC<{ duration: number, onChange: (newDuration: number) => 
             <span className='font-bold text-gray-400'>
                 :
             </span>
-            <Input type="number" min="0" max="59" value={formatUnit(minutes, 2)} className={`text-base text-black bg-transparent ${minutesAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((2*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
+            <Input type="number" min="0" max="59" value={formatUnit(minutes, 2)} className={`dark:text-white text-base text-black bg-transparent ${minutesAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((2*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
                 const newMinutes = e.target.value === "" ? 0 : parseInt(e.target.value);
                 if (newMinutes > 59 || newMinutes < 0) return;
                 onChange(assembleToSeconds(hours, newMinutes, seconds, milliseconds));
@@ -550,7 +550,7 @@ const DurationEditor: FC<{ duration: number, onChange: (newDuration: number) => 
             <span className='font-bold text-gray-400'>
                 :
             </span>
-            <Input type="number" min="0" max="59" value={formatUnit(seconds, 2)} className={`text-base text-black bg-transparent ${secondsAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((2*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
+            <Input type="number" min="0" max="59" value={formatUnit(seconds, 2)} className={`dark:text-white text-base text-black bg-transparent ${secondsAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((2*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
                 const newSeconds = e.target.value === "" ? 0 : parseInt(e.target.value);
                 if (newSeconds > 59 || newSeconds < 0) return;
                 onChange(assembleToSeconds(hours, minutes, newSeconds, milliseconds));
@@ -559,7 +559,7 @@ const DurationEditor: FC<{ duration: number, onChange: (newDuration: number) => 
             <span className='font-bold text-gray-400'>
                 ,
             </span>
-            <Input type="number" min="0" max="999" value={formatUnit(milliseconds, 3)} className={`text-base text-black bg-transparent ${millisecondsAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((3*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
+            <Input type="number" min="0" max="999" value={formatUnit(milliseconds, 3)} className={`dark:text-white text-base text-black bg-transparent ${millisecondsAreBad || isSame ? "border-b-red-500" : "border-transparent"} border-b-2 w-[calc((3*16px)+(3*4px))] rounded-none transition`} onChange={(e) => {
                 const newMilliseconds = e.target.value === "" ? 0 : parseInt(e.target.value);
                 if (newMilliseconds > 999 || newMilliseconds < 0) return;
                 onChange(assembleToSeconds(hours, minutes, seconds, newMilliseconds));

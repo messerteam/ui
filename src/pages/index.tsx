@@ -21,7 +21,7 @@ function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
         <h1 className="text-4xl font-bold">Messer</h1>
         <p className="text-sm text-gray-400">Capture Truth Quickly</p>
         <div className="flex flex-col gap-4 mt-6">
-          <Button className="flex gap-4 rounded-xl justify-between px-7 py-3 text-lg h-fit" asChild>
+          <Button className="flex gap-4 rounded-xl justify-between px-7 py-3 text-lg h-fit dark:text-white" asChild>
             <Link href={{ pathname: "/generate" }}>
               <div className="bg-white rounded-full p-1">
                 <Plus className="stroke-primary" width={16} height={16} />
@@ -31,7 +31,7 @@ function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
               </span>
             </Link>
           </Button>
-          <Button className="flex gap-4 rounded-xl justify-between px-7 py-3 text-lg h-fit" asChild>
+          <Button className="flex gap-4 rounded-xl justify-between px-7 py-3 text-lg h-fit dark:text-white" asChild>
             <Link href={{ pathname: "/projects" }}>
               <div className="bg-white rounded-full p-1">
                 <Pencil className="stroke-primary" width={16} height={16} />

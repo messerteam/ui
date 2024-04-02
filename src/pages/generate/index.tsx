@@ -131,8 +131,8 @@ const Generate = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <title>Generate</title>
             </Head>
             <div id="div1" className="flex flex-col items-center text-center justify-center gap-2 h-full">
-                {generating && <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white rounded-xl p-10">
+                {generating && <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex items-center justify-center">
+                    <div className="bg-white rounded-xl p-10 dark:bg-background dark:border dark:border-white">
                         <h1 className="text-2xl font-bold">Generating Subtitles</h1>
                         <p className="text-lg">This may take a while</p>
                         <RefreshCw className='animate-spin mx-auto mt-3' />
@@ -210,7 +210,7 @@ const Generate = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                             )}
                         />
 
-                        <Button className="flex gap-4 rounded-xl justify-between px-7 py-3 text-lg h-fit w-full" type="submit" disabled={generating}>
+                        <Button className="flex gap-4 rounded-xl justify-between px-7 py-3 text-lg h-fit w-full dark:text-white" type="submit" disabled={generating}>
                             {!id && <div className="bg-white rounded-full p-1">
                                 <Plus className="stroke-primary" width={16} height={16} />
                             </div>}

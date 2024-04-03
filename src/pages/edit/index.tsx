@@ -367,7 +367,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                     <Input
                         id="Original Subtitle"
                         placeholder='Original Subtitle'
-                        className='bg-[#dcdcdc] text-[#4f4f4f] placeholder:text-gray rounded-lg p-6 outline-none'
+                        className='bg-[#dcdcdc] text-[#4f4f4f] placeholder:text-gray rounded-lg p-6 outline-none dark:bg-white'
                         value={currentSubtitle?.text}
                         onChange={(e) => {
                             changeCurrentOriginalSubtitle(e.target.value)
@@ -383,7 +383,7 @@ const Edit = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                         id="Translated Subtitle"
                         placeholder='Translated Subtitle'
                         value={currentSubtitle?.translatedText}
-                        className='bg-slate-500 text-white placeholder:text-slate rounded-lg p-6 outline-none'
+                        className='bg-slate-500 text-white placeholder:text-slate rounded-lg p-6 outline-none dark:bg-zinc-600'
                         onChange={(e) => {
                             changeCurrentTranslatedSubtitle(e.target.value)
                         }}

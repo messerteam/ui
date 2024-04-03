@@ -9,9 +9,6 @@ import Toaster from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import "~/styles/globals.css";
 import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
-import Button from "~/components/ui/button";
 
 const lexend = Lexend({
   subsets: ["latin"],

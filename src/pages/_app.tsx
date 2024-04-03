@@ -8,6 +8,8 @@ import { ThemeProvider } from "~/components/theme";
 import Toaster from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import "~/styles/globals.css";
+import * as React from "react"
+import { trpc } from "~/utils/trpc";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -48,4 +50,4 @@ const MyApp: AppType = ({
   );
 };
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);

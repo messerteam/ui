@@ -22,6 +22,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip
 import type { Project } from '~/types';
 import { getAPI } from '~/utils/api';
 import { getServerSideProps } from '~/utils/serverProps';
+import { trpc } from '../../utils/trpc';
 
 dayjs.extend(relativeTime);
 dayjs.extend(timezone);
@@ -31,15 +32,9 @@ export { getServerSideProps };
 const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const PROJECTS_PER_PAGE = 6;
     const [page, setPage] = React.useState(1);
-    const projectsApi = useQuery<Project[]>('projects', async () => {
-        return getAPI(props.apiURL).getProjects().then((res) => {
-            const projects = [...res];
-            projects.sort((a, b) => Number(b.ctime) - Number(a.ctime));
-            return projects;
-        });
-    }, { refetchOnWindowFocus: true, onError: () => toast.error("Failed to load projects") });
-
-    const currentProjects = projectsApi.data?.slice((page - 1) * PROJECTS_PER_PAGE, page * PROJECTS_PER_PAGE);
+    const projects = trpc.project.list.useQuery({ sort: true }, { refetchOnWindowFocus: true, });
+    
+    const currentProjects = projects.data?.slice((page - 1) * PROJECTS_PER_PAGE, page * PROJECTS_PER_PAGE);
 
     return (
         <>
@@ -65,19 +60,19 @@ const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSidePro
                         </TableHeader>
                         <TableBody>
                             {(() => {
-                                if (projectsApi.isLoading) {
+                                if (projects.isLoading) {
                                     return (
                                         <TableRow>
                                             <TableCell colSpan={7} className='text-center'>Loading Projects...</TableCell>
                                         </TableRow>
                                     );
-                                } else if (projectsApi.isError) {
+                                } else if (projects.isError) {
                                     return (
                                         <TableRow>
                                             <TableCell colSpan={7} className='text-center text-red-500'>Failed to load projects</TableCell>
                                         </TableRow>
                                     );
-                                } else if (projectsApi.data?.length === 0) {
+                                } else if (projects.data?.length === 0) {
                                     return (
                                         <TableRow>
                                             <TableCell colSpan={7} className='text-center'>
@@ -157,7 +152,7 @@ const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSidePro
                                                         if (confirm("Are you sure you want to delete this project?")) {
                                                             getAPI(props.apiURL).deleteProject(project.id).then(() => {
                                                                 toast.success("Project deleted");
-                                                                void projectsApi.refetch();
+                                                                void projects.refetch();
                                                             }).catch(() => {
                                                                 toast.error("Failed to delete project");
                                                             });
@@ -192,15 +187,15 @@ const ProjectsPage = (props: InferGetServerSidePropsType<typeof getServerSidePro
                             })()}
                         </TableBody>
                     </Table>
-                    {projectsApi.data && projectsApi.data.length > 0 &&
+                    {projects.data && projects.data.length > 0 &&
                         <p className='w-full text-sm py-2 border-t-2 text-center text-gray-500'>
-                            Page {page} of {Math.ceil(projectsApi.data?.length / PROJECTS_PER_PAGE)}
+                            Page {page} of {Math.ceil(projects.data?.length / PROJECTS_PER_PAGE)}
                         </p>
                     }
                 </div>
                 <div className="flex gap-2 justify-end w-full items-center">
-                    <Button variant='secondary' onClick={() => setPage(page - 1)} disabled={!projectsApi.data || projectsApi.data.length === 0 || page === 1}>Previous</Button>
-                    <Button variant='secondary' onClick={() => setPage(page + 1)} disabled={!projectsApi.data || projectsApi.data.length === 0 || page === Math.ceil(projectsApi.data?.length / PROJECTS_PER_PAGE)}>Next</Button>
+                    <Button variant='secondary' onClick={() => setPage(page - 1)} disabled={!projects.data || projects.data.length === 0 || page === 1}>Previous</Button>
+                    <Button variant='secondary' onClick={() => setPage(page + 1)} disabled={!projects.data || projects.data.length === 0 || page === Math.ceil(projects.data?.length / PROJECTS_PER_PAGE)}>Next</Button>
                 </div>
             </div >
         </>
